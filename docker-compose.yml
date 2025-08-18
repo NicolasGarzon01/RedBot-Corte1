@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: soadb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  auth_service:
+    build: ./auth_service
+    env_file: ./auth_service/.env
+    ports:
+      - "8000:8000"
+    # Montamos el código para edición en caliente
+    volumes:
+      - ./auth_service/app:/app/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+
+  user_service:
+    build: ./user_service
+    env_file: ./user_service/.env
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./user_service/app:/app/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    depends_on:
+      - db
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - auth_service
+
+
+volumes:
+  db_data:

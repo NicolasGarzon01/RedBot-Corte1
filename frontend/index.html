@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Frontend SOA - Auth & Users</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Frontend SOA</h1>
+    <div class="tabs">
+      <button class="tab" id="tabLogin">Login</button>
+      <button class="tab" id="tabRegister">Registro</button>
+    </div>
+    <form id="loginForm">
+      <input type="text" id="loginUsername" placeholder="Usuario" required>
+      <input type="password" id="loginPassword" placeholder="Contraseña" required>
+      <button type="submit">Login</button>
+    </form>
+    <form id="registerForm" style="display:none;">
+      <input type="text" id="regUsername" placeholder="Usuario" required>
+      <input type="password" id="regPassword" placeholder="Contraseña" required>
+      <button type="submit">Registrar</button>
+    </form>
+    <pre id="output"></pre>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
