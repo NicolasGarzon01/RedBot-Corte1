@@ -1,7 +1,9 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine
 from .auth import routes as auth_routes
+from .auth.models import User
 
 Base.metadata.create_all(bind=engine)
 
@@ -9,7 +11,7 @@ app = FastAPI(title="Auth Service - SOA")
 
 @app.get("/")
 def root():
-    return {"message": "Auth service is running"} 
+    return {"message": "Auth service is running"}
 app.include_router(auth_routes.router, prefix="/auth", tags=["auth"])
 
 app.add_middleware(

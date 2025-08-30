@@ -1,6 +1,8 @@
+
 from fastapi import FastAPI
 from .database import Base, engine
 from .tasks import routes as task_routes
+from .models import Task
 
 Base.metadata.create_all(bind=engine)
 

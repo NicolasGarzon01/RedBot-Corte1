@@ -31,5 +31,9 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.username == user.username).first()
     if not db_user or not verify_password(user.password, db_user.password_hash):
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
-    token = create_access_token({"sub": db_user.username, "role": db_user.role})
+    token = create_access_token({
+        "sub": str(db_user.id),          
+        "username": db_user.username,    
+        "role": db_user.role
+    })
     return {"access_token": token, "token_type": "bearer"}

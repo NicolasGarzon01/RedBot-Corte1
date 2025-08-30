@@ -1,19 +1,21 @@
 from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer
 from jose import jwt, JWTError
-from ..config import SECRET_KEY, ALGORITHM
+import os
 
 security = HTTPBearer()
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecret")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
-def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
+def get_bearer_token(credentials=Depends(security)) -> str:
+    return credentials.credentials
+
+def get_current_user(token: str = Depends(get_bearer_token)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")
         if user_id and isinstance(user_id, str) and user_id.isdigit():
             user_id = int(user_id)
-        if payload.get("role") != "admin":
-            raise HTTPException(status_code=403, detail="Acceso denegado: requiere rol admin")
         payload["sub"] = user_id
         return payload
     except JWTError:

@@ -6,7 +6,7 @@ class Account(Base):
     __tablename__ = "accounts"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, nullable=False)   # FK hacia tabla users (otro servicio)
+    user_id = Column(Integer, nullable=False)   # FK hacia tabla users (otro servicio)
     platform = Column(String, nullable=False)   # "instagram", "reddit", "mastodon"
     handle = Column(String, nullable=False)     # username o nombre de la cuenta
     token = Column(String, nullable=False)      # access token (por ahora texto plano)

@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+
 class AccountBase(BaseModel):
-    user_id: str
+    user_id: int
     platform: str
     handle: str
     token: str

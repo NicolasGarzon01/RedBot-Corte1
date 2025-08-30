@@ -50,6 +50,8 @@ def get_current_user_id(credentials=Depends(security)) -> int:
     user_id = payload.get("user_id") or payload.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail="No user_id in token")
+    if isinstance(user_id, str) and user_id.isdigit():
+        user_id = int(user_id)
     return user_id
 
 def ensure_account_owner(

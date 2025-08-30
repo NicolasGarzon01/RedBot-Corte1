@@ -14,6 +14,8 @@ def get_current_user_id(credentials=Depends(security)) -> str:
         user_id = payload.get("sub")
         if not user_id:
             raise HTTPException(status_code=401, detail="No user_id in token")
+        if isinstance(user_id, str) and user_id.isdigit():
+            user_id = int(user_id)
         return user_id
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
