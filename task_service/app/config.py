@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./auth.db")
-
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@db:5432/soadb")
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecret")
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ALGORITHM = "HS256"

@@ -4,19 +4,15 @@ from typing import Generator
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-import jwt
+from jose import jwt, JWTError
 
-from ..config import JWT_SECRET, JWT_ALGORITHM
+from ..config import SECRET_KEY, JWT_ALGORITHM
 from ..database import SessionLocal
 from .models import User
-from jwt import ExpiredSignatureError, InvalidTokenError
 
 security = HTTPBearer()  # extrae automáticamente Authorization: Bearer <token>
 
 def get_db() -> Generator[Session, None, None]:
-    """
-    Dependencia para obtener una sesión de DB.
-    """
     db = SessionLocal()
     try:
         yield db
@@ -24,16 +20,11 @@ def get_db() -> Generator[Session, None, None]:
         db.close()
 
 def decode_token(token: str) -> dict:
-    """
-    Decodifica y verifica el JWT. Lanza HTTPException si no es válido.
-    """
     try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
         return payload
-    except ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expirado")
-    except InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Token inválido")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),

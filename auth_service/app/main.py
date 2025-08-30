@@ -5,7 +5,6 @@ from .auth import routes as auth_routes
 
 Base.metadata.create_all(bind=engine)
 
-
 app = FastAPI(title="Auth Service - SOA")
 
 @app.get("/")
