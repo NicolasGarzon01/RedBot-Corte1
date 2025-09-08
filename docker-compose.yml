@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   user_service:
     build: ./user_service
@@ -57,6 +57,19 @@ services:
       - db
     env_file:
       - .env
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    networks:
+      - soa_net
+    depends_on:
+      - account_service
+      - auth_service
+      - user_service
+      - task_service
+      - executor_service
   db:
     image: postgres:15
     environment:

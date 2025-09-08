@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer
 from jose import jwt, JWTError
-from ..config import SECRET_KEY, ALGORITHM
+from ..config import SECRET_KEY, JWT_ALGORITHM  # <-- CORREGIDO
 
 security = HTTPBearer()
 
@@ -10,7 +10,8 @@ def get_current_user_id(credentials=Depends(security)) -> str:
     if not token:
         raise HTTPException(status_code=401, detail="Token missing")
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        # 👇 CORREGIDO
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
         user_id = payload.get("sub")
         if not user_id:
             raise HTTPException(status_code=401, detail="No user_id in token")

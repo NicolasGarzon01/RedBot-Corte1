@@ -3,6 +3,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@db:5432/soadb")
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecret")
-ALGORITHM = "HS256"
+# --- Carga toda la configuración desde el entorno ---
+DATABASE_URL = os.getenv("DATABASE_URL")
+SECRET_KEY = os.getenv("SECRET_KEY")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+
+# --- Verificación ---
+if not DATABASE_URL or not SECRET_KEY or not JWT_ALGORITHM:
+    raise ValueError("Faltan variables de entorno críticas: DATABASE_URL, SECRET_KEY, JWT_ALGORITHM")

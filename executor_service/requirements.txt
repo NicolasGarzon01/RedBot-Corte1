@@ -1,7 +1,13 @@
 fastapi
 uvicorn
 python-jose
-requests
+fastapi
+uvicorn
+python-multipart
+pydantic
 sqlalchemy
 psycopg2-binary
+python-jose
 python-dotenv
+python-dotenv
+praw

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>RedBot - Agregar Tarea</title>
+  <link rel="stylesheet" href="add_task.css">
+</head>
+<body>
+  <div class="add-task-container">
+    <h2>Agregar Tarea</h2>
+    <form id="addTaskForm">
+      <select id="taskType" required>
+        <option value="">Tipo de tarea</option>
+        <option value="responder">Responder comentarios</option>
+        <option value="publicar">Publicaciones programadas</option>
+        <option value="moderar">Moderar comentarios</option>
+      </select>
+      <input type="text" id="accountId" placeholder="ID de la cuenta" required>
+      <textarea id="config" placeholder="Configuración (JSON)" required></textarea>
+      <button type="submit">Agregar</button>
+    </form>
+    <div id="addTaskError" class="error"></div>
+  </div>
+  <script src="add_task.js"></script>
+</body>
+</html>
