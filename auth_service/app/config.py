@@ -1,19 +1,17 @@
+# en app/config.py (dentro de auth_service)
 import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
 
-# Carga las variables de un archivo .env (útil para pruebas locales)
-load_dotenv()
+class Settings(BaseSettings):
+    # Variables de entorno que este servicio necesita
+    DATABASE_URL: str
+    SECRET_KEY: str
+    JWT_ALGORITHM: str
+    JWT_EXPIRATION_MINUTES: int = 30 # Valor por defecto
 
-# --- Configuración de la Base de Datos ---
-DATABASE_URL = os.getenv("DATABASE_URL")
+    class Config:
+        # Le dice a Pydantic que lea las variables del archivo .env
+        env_file = ".env" 
 
-# --- Configuración de JWT (Tokens) ---
-SECRET_KEY = os.getenv("SECRET_KEY")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-# 👇 VARIABLE AÑADIDA (con un valor por defecto de 30 minutos)
-JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", "30"))
-
-# --- Verificación ---
-# Nos aseguramos de que todas las variables necesarias estén cargadas
-if not DATABASE_URL or not SECRET_KEY or not JWT_ALGORITHM:
-    raise ValueError("Una o más variables de entorno críticas (DATABASE_URL, SECRET_KEY, JWT_ALGORITHM) no están definidas.")
+# Crea la instancia 'settings' que los otros archivos importarán
+settings = Settings()

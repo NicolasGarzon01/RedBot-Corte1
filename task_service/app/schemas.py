@@ -1,21 +1,28 @@
-from pydantic import BaseModel
-from typing import Any, Dict
+# en app/schemas.py (dentro de task_service)
 
-# Este es el esquema base, con los campos comunes.
-class TaskBase(BaseModel):
+from pydantic import BaseModel
+from typing import Optional, Dict, Any
+
+# --- Esquema para Crear ---
+
+class TaskCreate(BaseModel):
+    """
+    Schema para crear una tarea.
+    """
+    account_id: int
     type: str
     config_json: Dict[str, Any]
 
-# Este es el esquema para CREAR una tarea. No necesita 'status'.
-class TaskCreate(TaskBase):
-    account_id: int
+# --- Esquema para Actualizar (Update) ---
 
-# Este es el esquema para MOSTRAR una tarea en la respuesta de la API.
-# Aquí es donde se necesita el campo 'status'.
-class Task(TaskBase):
-    id: int
-    account_id: int
-    status: str  # <--- Este es el campo que faltaba
+class TaskUpdate(BaseModel):
+    """
+    Schema para actualizar una tarea.
+    Todos los campos son opcionales.
+    """
+    type: Optional[str] = None
+    config_json: Optional[Dict[str, Any]] = None
 
     class Config:
-        from_attributes = True # <--- Esta es la versión actualizada de orm_mode
+        # Pydantic v2 usa esto en lugar de orm_mode
+        from_attributes = True

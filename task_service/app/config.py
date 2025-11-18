@@ -1,13 +1,18 @@
 import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
 
-load_dotenv()
+class Settings(BaseSettings):
+    # Variables de entorno existentes
+    DATABASE_URL: str
+    SECRET_KEY: str
+    JWT_ALGORITHM: str
+    
+    # Nueva variable para Google
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
 
-# --- Carga toda la configuración desde el entorno ---
-DATABASE_URL = os.getenv("DATABASE_URL")
-SECRET_KEY = os.getenv("SECRET_KEY")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+    class Config:
+        # Le dice a Pydantic que lea las variables del archivo .env
+        env_file = ".env" 
 
-# --- Verificación ---
-if not DATABASE_URL or not SECRET_KEY or not JWT_ALGORITHM:
-    raise ValueError("Faltan variables de entorno críticas: DATABASE_URL, SECRET_KEY, JWT_ALGORITHM")
+# Crea la instancia 'settings' que los otros archivos (como services.py) importarán
+settings = Settings()

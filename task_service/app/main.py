@@ -1,20 +1,16 @@
+# en app/main.py
+
 from fastapi import FastAPI
-from .database import Base, engine
-from .tasks import routes as task_routes
-from .models import Task
-from fastapi.middleware.cors import CORSMiddleware
+from .adapters.http import routes as task_routes
+from .database import engine
+from .adapters.db import models as db_models
 
-Base.metadata.create_all(bind=engine)
+# Crea las tablas (usando los modelos de SQLAlchemy en adapters/db/models.py)
+db_models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Task Service")
+app = FastAPI(title="Task Service (Hexagonal)")
 
-app.add_middleware(
-	CORSMiddleware,
-	allow_origins=["*"],
-	allow_credentials=True,
-	allow_methods=["*"],
-	allow_headers=["*"],
-)
+# Incluimos las rutas del adaptador HTTP
+app.include_router(task_routes.router)
 
-# Se añade el prefijo /api para que coincida con la configuración de NGINX.
-app.include_router(task_routes.router, prefix="/api")
+# (Aquí puedes añadir tu middleware de CORS si es necesario)

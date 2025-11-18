@@ -1,12 +1,15 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from .config import DATABASE_URL
+from .config import settings # <-- LÍNEA CORREGIDA: Importamos 'settings'
 
-Base = declarative_base()
-engine = create_engine(DATABASE_URL)
+# LÍNEA CORREGIDA: Usamos settings.DATABASE_URL
+engine = create_engine(settings.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+Base = declarative_base()
+
+# Esta es la función que usan tus rutas para obtener una sesión
 def get_db():
     db = SessionLocal()
     try:

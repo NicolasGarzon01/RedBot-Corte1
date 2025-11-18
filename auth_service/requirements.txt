@@ -8,3 +8,5 @@ python-dotenv
 alembic
 python-multipart
 pydantic
+bcrypt==3.2.0
+pydantic-settings

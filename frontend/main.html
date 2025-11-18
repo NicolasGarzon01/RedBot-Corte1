@@ -12,12 +12,25 @@
     <a href="history.html">Historial</a>
     <a href="login.html" onclick="logout()">Salir</a>
   </nav>
+
   <div class="main-container">
-    <h2>Cuentas vinculadas</h2>
-    <div id="accounts"></div>
-    <h2>Tareas</h2>
-    <div id="tasks"></div>
+    
+    <div class="content-box">
+      <h2>Cuentas vinculadas</h2>
+      <ul id="accounts-list">
+        </ul>
+      <div id="accountsError" class="error"></div>
+    </div>
+
+    <div class="content-box">
+      <h2>Tareas</h2>
+      <ul id="tasks-list">
+        </ul>
+      <div id="tasksError" class="error"></div>
+    </div>
+
   </div>
+  
   <script src="main.js"></script>
 </body>
 </html>

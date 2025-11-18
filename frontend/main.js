@@ -1,71 +1,156 @@
-function logout() {
-  localStorage.removeItem('token');
-  window.location.href = '/login.html'; // Redirige al login al salir
-}
+// en frontend/main.js
 
-async function fetchAccounts() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    document.getElementById('accounts').innerHTML = `<div style='color:red'>No estás autenticado.</div>`;
-    return;
-  }
-  try {
-    const res = await fetch('/api/accounts', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (res.status === 401) {
-       logout(); // Si el token es inválido, cierra sesión
-       return;
-    }
-    if (!res.ok) {
-      document.getElementById('accounts').innerHTML = `<div style='color:red'>Error: ${res.status} ${res.statusText}</div>`;
-      return;
-    }
-    const accounts = await res.json();
-    const container = document.getElementById('accounts');
-    if (!Array.isArray(accounts)) {
-      container.innerHTML = `<div style='color:red'>Respuesta inesperada del servidor.</div>`;
-      return;
-    }
-    container.innerHTML = accounts.map(acc => `<div>ID: ${acc.id} - ${acc.handle} (${acc.platform})</div>`).join('');
-  } catch (err) {
-    document.getElementById('accounts').innerHTML = `<div style='color:red'>Error de conexión con el servicio de cuentas.</div>`;
-  }
-}
-
-async function fetchTasks() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    document.getElementById('tasks').innerHTML = `<div style='color:red'>No estás autenticado.</div>`;
-    return;
-  }
-  try {
-    // Se añade la barra final para coincidir con la configuración de NGINX
-    const res = await fetch('/api/tasks/', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (res.status === 401) {
-       logout(); // Si el token es inválido, cierra sesión
-       return;
-    }
-    if (!res.ok) {
-      document.getElementById('tasks').innerHTML = `<div style='color:red'>Error: ${res.status} ${res.statusText}</div>`;
-      return;
-    }
-    const tasks = await res.json();
-    const container = document.getElementById('tasks');
-    if (!Array.isArray(tasks)) {
-      container.innerHTML = `<div style='color:red'>Respuesta inesperada del servidor.</div>`;
-      return;
-    }
-    container.innerHTML = tasks.map(task => `<div>${task.type} - ${task.status}</div>`).join('');
-  } catch (err) {
-    document.getElementById('tasks').innerHTML = `<div style='color:red'>Error de conexión con el servicio de tareas.</div>`;
-  }
-}
-
-// Llama a las funciones para cargar los datos cuando la página carga
 document.addEventListener('DOMContentLoaded', () => {
-  fetchAccounts();
-  fetchTasks();
+    fetchAccounts();
+    fetchTasks();
 });
+
+const token = localStorage.getItem('token');
+
+// --- Cargar Cuentas ---
+async function fetchAccounts() {
+    const list = document.getElementById('accounts-list');
+    const errorDiv = document.getElementById('accountsError');
+    if (!list) return;
+
+    try {
+        const res = await fetch('/api/accounts', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.status === 401) {
+            window.location.href = 'login.html';
+            return;
+        }
+        if (res.status === 502) {
+            errorDiv.textContent = 'Error: 502 Bad Gateway (El servicio de cuentas está caído)';
+            return;
+        }
+        if (!res.ok) {
+            throw new Error('Error al cargar las cuentas');
+        }
+
+        const accounts = await res.json();
+        list.innerHTML = ''; // Limpiar lista
+        accounts.forEach(acc => {
+            const li = document.createElement('li');
+            // Esta parte ya estaba correcta
+            li.innerHTML = `
+                ID: ${acc.id} - ${acc.handle} (${acc.platform})
+                
+                <a href="edit_account.html?id=${acc.id}" class="edit-btn">Editar</a>
+                
+                <button class="delete-btn" data-id="${acc.id}" data-type="account">X</button>
+            `;
+            list.appendChild(li);
+        });
+    } catch (err) {
+        errorDiv.textContent = err.message;
+    }
+}
+
+// --- Cargar Tareas ---
+async function fetchTasks() {
+    const list = document.getElementById('tasks-list');
+    const errorDiv = document.getElementById('tasksError');
+    if (!list) return;
+
+    try {
+        const res = await fetch('/api/tasks/', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401) {
+            window.location.href = 'login.html';
+            return;
+        }
+        if (res.status === 502) {
+            errorDiv.textContent = 'Error: 502 Bad Gateway (El servicio de tareas está caído)';
+            return;
+        }
+        if (!res.ok) {
+            throw new Error('Error al cargar las tareas');
+        }
+        const tasks = await res.json();
+        list.innerHTML = ''; // Limpiar lista
+        tasks.forEach(task => {
+            const li = document.createElement('li');
+            
+            // ▼▼▼ BLOQUE CORREGIDO ▼▼▼
+            // Añadimos el enlace "Editar" junto al botón "Eliminar"
+            li.innerHTML = `
+                ${task.type} - ${task.status}
+                
+                <a href="edit_task.html?id=${task.id}" class="edit-btn">Editar</a>
+                
+                <button class="delete-btn" data-id="${task.id}" data-type="task">X</button>
+            `;
+            // ^^^ BLOQUE CORREGIDO ^^^
+            
+            if (task.status === 'failed') {
+                li.style.color = 'red';
+            }
+            if (task.status === 'completed') {
+                li.style.color = 'green';
+            }
+            list.appendChild(li);
+        });
+    } catch (err) {
+        errorDiv.textContent = err.message;
+    }
+}
+
+// --- Manejador de Clics para Borrar ---
+document.addEventListener('click', function(e) {
+    // Revisa si el clic fue en un botón con la clase 'delete-btn'
+    if (e.target.classList.contains('delete-btn')) {
+        const id = e.target.dataset.id;
+        const type = e.target.dataset.type;
+        
+        if (confirm(`¿Estás seguro de que quieres eliminar ${type} con ID ${id}?`)) {
+            handleDeleteClick(id, type);
+        }
+    }
+    // No necesitamos un manejador para 'edit-btn' porque es un enlace <a>
+});
+
+async function handleDeleteClick(id, type) {
+    let url = '';
+    if (type === 'account') {
+        url = `/api/accounts/${id}`;
+    } else if (type === 'task') {
+        url = `/api/tasks/${id}`;
+    } else {
+        return;
+    }
+
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || 'Error al eliminar');
+        }
+
+        alert(`${type} eliminado exitosamente.`);
+        
+        // Recargar las listas
+        if (type === 'account') {
+            fetchAccounts();
+        } else if (type === 'task') {
+            fetchTasks();
+        }
+
+    } catch (err) {
+        alert(`Error: ${err.message}`);
+    }
+}
+
+// --- Función de Salir (Logout) ---
+function logout() {
+    localStorage.removeItem('token');
+}
