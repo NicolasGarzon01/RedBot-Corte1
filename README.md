@@ -1,6 +1,6 @@
 Nicolas Garzon  Carvajal
 Santiago Cordero Osorio
-# Idea del proyecto: Bot viralizacion para Reddit y X
+# Idea del proyecto: Bot viralizacion para Reddit
 Este proyecto consiste en el desarrollo de un bot para Reddit que utiliza la API oficial de la plataforma con el objetivo de automatizar respuestas dentro de un subreddit específico. El propósito principal del bot es identificar comentarios que contengan ciertas palabras clave relacionadas con solicitudes de ayuda, dudas o problemas comunes, y responder de forma automática con mensajes previamente definidos que contengan información útil, enlaces o recomendaciones.
 
 La motivación detrás de este bot es demostrar cómo se puede aplicar la automatización de procesos en comunidades digitales para mejorar la interacción y asistencia entre usuarios. Por ejemplo, cuando alguien publica un comentario que menciona términos como “ayuda”, “problema con Python” o “error al compilar”, el bot detecta esas palabras y responde con un mensaje que contiene enlaces a documentación oficial o sugerencias básicas para resolver el inconveniente. De esta manera, se puede ofrecer una primera guía rápida al usuario, ahorrando tiempo a los moderadores y fomentando una comunidad más participativa.
