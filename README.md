@@ -1,0 +1,10 @@
+Nicolas Garzon  Carvajal
+Santiago Cordero Osorio
+# Idea del proyecto: Bot viralizacion para Reddit y X
+Este proyecto consiste en el desarrollo de un bot para Reddit que utiliza la API oficial de la plataforma con el objetivo de automatizar respuestas dentro de un subreddit específico. El propósito principal del bot es identificar comentarios que contengan ciertas palabras clave relacionadas con solicitudes de ayuda, dudas o problemas comunes, y responder de forma automática con mensajes previamente definidos que contengan información útil, enlaces o recomendaciones.
+
+La motivación detrás de este bot es demostrar cómo se puede aplicar la automatización de procesos en comunidades digitales para mejorar la interacción y asistencia entre usuarios. Por ejemplo, cuando alguien publica un comentario que menciona términos como “ayuda”, “problema con Python” o “error al compilar”, el bot detecta esas palabras y responde con un mensaje que contiene enlaces a documentación oficial o sugerencias básicas para resolver el inconveniente. De esta manera, se puede ofrecer una primera guía rápida al usuario, ahorrando tiempo a los moderadores y fomentando una comunidad más participativa.
+
+Desde el punto de vista técnico, el bot está programado en Python y hace uso de la biblioteca praw (Python Reddit API Wrapper), que permite conectarse con la API de Reddit de forma sencilla. Se configuran credenciales seguras para acceder a la cuenta del bot y se define un bucle de monitoreo que examina en tiempo real los nuevos comentarios o publicaciones. Si se encuentra una coincidencia con las palabras clave definidas, se genera automáticamente una respuesta.
+
+Este proyecto se realiza con fines académicos y educativos, y busca reforzar conocimientos en automatización, APIs, y ética en el desarrollo de software. Se ha tomado en cuenta el cumplimiento de las políticas de uso de Reddit, evitando cualquier práctica de spam o manipulación. Además, el código es modular y se puede adaptar fácilmente para otras temáticas o subreddits diferentes.
